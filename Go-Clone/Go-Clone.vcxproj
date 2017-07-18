@@ -160,6 +160,7 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\GoGame.h" />
   </ItemGroup>
