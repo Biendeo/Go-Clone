@@ -23,6 +23,11 @@ class GoGame {
 	const GameState& GetGameState() const;
 
 	private:
+	/// <summary>
+	/// Renders the current game scene. This should only be called in the game loop.
+	/// </summary>
+	void RenderScene();
+
 	GameState gameState;
 
 	//? Should I be using a smart pointer here?
