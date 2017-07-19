@@ -11,11 +11,17 @@ GoGame::GoGame() {
 	sf::VideoMode videoMode;
 	videoMode.width = 800;
 	videoMode.height = 600;
+	systemVars.fullscreen = false;
 	window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default);
+
+	root = nullptr;
+	// Since root is nullptr right now, then the construction of the root object should correctly have a nullptr parent.
+	root = GameObject::CreateRootObject(this);
 }
 
 
 GoGame::~GoGame() {
+	GameObject::Destroy(root);
 	delete window;
 }
 
@@ -49,14 +55,26 @@ bool GoGame::ToggleFullscreen() {
 	systemVars.windowHeight = 600;
 	systemVars.screenWidth = sf::VideoMode::getDesktopMode().width;
 	systemVars.screenHeight = sf::VideoMode::getDesktopMode().height;
-	if (systemVars.fullscreen) {
+	if (!systemVars.fullscreen) {
 		window = new sf::Window(sf::VideoMode(systemVars.screenWidth, systemVars.screenHeight), systemVars.windowTitle, sf::Style::Fullscreen);
-		systemVars.fullscreen = false;
+		systemVars.fullscreen = true;
 	} else {
 		window = new sf::Window(sf::VideoMode(systemVars.windowWidth, systemVars.windowHeight), systemVars.windowTitle, sf::Style::Default);
-		systemVars.fullscreen = true;
+		systemVars.fullscreen = false;
 	}
 	return systemVars.fullscreen;
+}
+
+std::shared_ptr<GameObject> GoGame::GetRootObject() {
+	return std::shared_ptr<GameObject>(root);
+}
+
+void GoGame::RegisterObject(std::shared_ptr<GameObject> object) {
+	objects.insert(std::make_pair(object->GetID(), object));
+}
+
+void GoGame::UnregisterObject(std::shared_ptr<GameObject> object) {
+	objects.erase(object->GetID());
 }
 
 void GoGame::RenderScene() {

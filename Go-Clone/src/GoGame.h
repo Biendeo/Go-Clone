@@ -1,8 +1,10 @@
 #pragma once
 
+#include <map>
 #include <SFML/Window.hpp>
 
 #include "GameState.h"
+#include "GameObject.h"
 
 /// <summary>
 /// Stores information about the current system, this is mostly used for window management and hardware polling.
@@ -40,15 +42,60 @@ class GoGame {
 	/// <returns>Whether the program is now fullscreen or not.</returns>
 	bool ToggleFullscreen();
 
+	/// <summary>
+	/// Returns the root game object in the scene.
+	/// </summary>
+	/// <returns>The root game object in the scene.</returns>
+	std::shared_ptr<GameObject> GetRootObject();
+
+	/// <summary>
+	/// Registers an object into the list of objects.
+	/// Do not call this from anywhere except from the GameObject instantiation.
+	/// If the new object's ID exists already, we have a problem, so it'll probably error here.
+	/// </summary>
+	/// <param name="object">The object to be registered.</param>
+	void RegisterObject(std::shared_ptr<GameObject> object);
+
+	/// <summary>
+	/// Unregisters an object from the list of objects.
+	/// Do not call this from anywhere except from the GameObject destroy function.
+	/// If the object's ID doesn't exist, then we'll probably error here.
+	/// </summary>
+	/// <param name="object">The object to be unregistered.</param>
+	void UnregisterObject(std::shared_ptr<GameObject> object);
+
 	private:
 	/// <summary>
 	/// Renders the current game scene. This should only be called in the game loop.
 	/// </summary>
 	void RenderScene();
 
+	/// <summary>
+	/// Contains every object in the scene. Shared pointers are used since this has ownership of them.
+	/// </summary>
+	std::map<uint32_t, std::shared_ptr<GameObject>> objects;
+	
+	/// <summary>
+	/// The root object is special and is held on it's own.
+	/// All objects in the scene must be children of this object. All game loop items depend on it.
+	/// </summary>
+	std::shared_ptr<GameObject> root;
+
+	//TODO: Add a camera object here.
+
+	/// <summary>
+	/// This contains all the variables related to defining the current variables for the game.
+	/// </summary>
 	GameState gameState;
 
 	//? Should I be using a smart pointer here?
+	/// <summary>
+	/// The current rendering window. This is reset whenever the window switches from fullscreen to windowed.
+	/// </summary>
 	sf::Window* window;
+
+	/// <summary>
+	/// The system variables, particularly for window management and hardware polling. Game specific variables should not be here.
+	/// </summary>
 	SystemVariables systemVars;
 };
