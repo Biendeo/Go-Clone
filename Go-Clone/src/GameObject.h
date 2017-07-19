@@ -1,7 +1,9 @@
 #pragma once
 
+#include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 //TODO: Set up children.
 
@@ -25,8 +27,7 @@ class GameObject {
 	/// <summary>
 	/// Removes this object from the scene. This should clean up any child objects.
 	/// </summary>
-	/// <param name="object">The object to be destroyed.</param>
-	static void Destroy(std::shared_ptr<GameObject> object);
+	void Destroy();
 
 	/// <summary>
 	/// Returns the object's ID. This is used to uniquely identify the object.
@@ -53,6 +54,30 @@ class GameObject {
 	/// <param name="newName">The new name.</param>
 	void SetName(const std::string& newName);
 
+	/// <summary>
+	/// Returns the object's parent.
+	/// </summary>
+	/// <returns>The object's parent.</returns>
+	std::shared_ptr<GameObject> GetParent() const;
+
+	/// <summary>
+	/// Sets the object's parent. This should not be a null object, it must be valid.
+	/// </summary>
+	/// <param name="newParent">The new parent object.</param>
+	void SetParent(std::shared_ptr<GameObject> newParent);
+
+	/// <summary>
+	/// Gets a shared pointer of this object. This correctly references the engine, so it should be properly managed.
+	/// </summary>
+	/// <returns>A shared pointer of this object.</returns>
+	std::shared_ptr<GameObject> GetSharedPointer();
+
+	/// <summary>
+	/// Gets a vector of all the children of an object. It's much better to iterate over this for some purposes, such as Destroy().
+	/// </summary>
+	/// <returns>A vector of all the children.</returns>
+	std::vector<std::shared_ptr<GameObject>> GetChildren();
+
 	protected:
 	/// <summary>
 	/// A pointer to the engine object. This allows the objects to find other parts of data.
@@ -78,6 +103,12 @@ class GameObject {
 	/// </summary>
 	std::string name;
 
+	/// <summary>
+	/// The object's children. This is used to quickly access all the children of this object.
+	/// Do not modify this directly, use the SetParent() function to move the children.
+	/// </summary>
+	std::map<uint32_t, std::weak_ptr<GameObject>> children;
+
 	private:
 	/// <summary>
 	/// This is handled internally. Every new object will take this value and increment it by one.
@@ -85,4 +116,3 @@ class GameObject {
 	/// </summary>
 	static uint32_t nextID;
 };
-

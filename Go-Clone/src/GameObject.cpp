@@ -14,26 +14,31 @@ GameObject* GameObject::CreateRootObject(GoGame* engine) {
 }
 
 GameObject::GameObject() {
-	this->parent = engine->GetRootObject();
 	SetID(nextID++);
 	engine->RegisterObject(std::shared_ptr<GameObject>(this));
+	SetParent(engine->GetRootObject());
 }
 
 GameObject::GameObject(std::shared_ptr<GameObject> parent) : GameObject() {
-	this->parent = parent;
+	SetParent(parent);
 }
 
 
 GameObject::~GameObject() {
-	// Huh?
-	if (true) {
-		int x = 0;
-	}
+
 }
 
-void GameObject::Destroy(std::shared_ptr<GameObject> object) {
-	//TODO: Once children are set up, destroy all the children, and clean up variables.
-	engine->UnregisterObject(object);
+void GameObject::Destroy() {
+	for (auto child : GetChildren()) {
+		std::shared_ptr<GameObject>(child)->Destroy();
+	}
+
+	if (ID != 1) {
+		std::shared_ptr<GameObject> parent = std::shared_ptr<GameObject>(this->parent);
+		parent->children.erase(ID);
+	}
+
+	engine->UnregisterObject(GetSharedPointer());
 }
 
 uint32_t GameObject::GetID() const {
@@ -51,4 +56,37 @@ std::string GameObject::GetName() const {
 
 void GameObject::SetName(const std::string& newName) {
 	this->name = newName;
+}
+
+std::shared_ptr<GameObject> GameObject::GetParent() const {
+	return std::shared_ptr<GameObject>(parent);
+}
+
+void GameObject::SetParent(std::shared_ptr<GameObject> newParent) {
+	// Here is an added check if the object is the root object.
+	if (newParent == nullptr && ID == 1) {
+		this->parent = newParent;
+	} else {
+		// If a parent exists yet, then it needs to be removed.
+		if (!parent.expired()) {
+			std::shared_ptr<GameObject> oldParent = std::shared_ptr<GameObject>(parent);
+			oldParent->children.erase(ID);
+		}
+		//TODO: Move the object so that it remains in the same location globally.
+		this->parent = newParent;
+		newParent->children.insert(std::make_pair(ID, GetSharedPointer()));
+	}
+}
+
+std::shared_ptr<GameObject> GameObject::GetSharedPointer() {
+	return engine->GetSharedPointer(ID);
+}
+
+std::vector<std::shared_ptr<GameObject>> GameObject::GetChildren() {
+	std::vector<std::shared_ptr<GameObject>> v;
+	for (auto child : children) {
+		v.push_back(std::shared_ptr<GameObject>(child.second));
+	}
+
+	return v;
 }

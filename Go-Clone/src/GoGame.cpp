@@ -22,14 +22,27 @@ GoGame::GoGame() {
 
 
 GoGame::~GoGame() {
-	GameObject::Destroy(std::shared_ptr<GameObject>(root));
-	root.reset();
+	std::shared_ptr<GameObject>(root)->Destroy();
 	delete window;
 }
 
 void GoGame::Start() {
 	std::cout << "We're in the start function!\n";
 	std::cout << "If you see a rainbow traingle in the top-right corner, you're good!\n";
+
+	std::cout << "Putting in a couple of dummy objects and deleting them quickly.\n";
+
+	//TODO: Now that I'm here, I realised that I should make this a static function.
+	for (int i = 0; i < 10000; ++i) {
+		auto dummyVar = new GameObject();
+		dummyVar->SetName("Item 1");
+		auto dummyTwo = new GameObject(dummyVar->GetSharedPointer());
+		dummyTwo->SetName("Item 2");
+
+		dummyVar->Destroy();
+	}
+
+	std::cout << "Seems okay.\n";
 
 	// This is a standard while loop described on the documentation page.
 	while (window->isOpen()) {
@@ -85,6 +98,10 @@ void GoGame::RegisterObject(std::shared_ptr<GameObject> object) {
 
 void GoGame::UnregisterObject(std::shared_ptr<GameObject> object) {
 	objects.erase(object->GetID());
+}
+
+std::shared_ptr<GameObject> GoGame::GetSharedPointer(uint32_t ID) {
+	return std::shared_ptr<GameObject>(objects.at(ID));
 }
 
 void GoGame::RenderScene() {

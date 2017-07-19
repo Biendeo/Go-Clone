@@ -64,6 +64,13 @@ class GoGame {
 	/// <param name="object">The object to be unregistered.</param>
 	void UnregisterObject(std::shared_ptr<GameObject> object);
 
+	/// <summary>
+	/// Gets a shared pointer of a given object. This is so that they correctly reference the original shared pointer.
+	/// </summary>
+	/// <param name="ID">The ID of the object.</param>
+	/// <returns>A shared pointer of the object.</returns>
+	std::shared_ptr<GameObject> GetSharedPointer(uint32_t ID);
+
 	private:
 	/// <summary>
 	/// Renders the current game scene. This should only be called in the game loop.
