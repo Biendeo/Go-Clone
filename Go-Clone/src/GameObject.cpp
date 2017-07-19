@@ -5,12 +5,12 @@
 GoGame* GameObject::engine = nullptr;
 uint32_t GameObject::nextID = 1;
 
-std::shared_ptr<GameObject> GameObject::CreateRootObject(GoGame* engine) {
+GameObject* GameObject::CreateRootObject(GoGame* engine) {
 	GameObject::engine = engine;
 	GameObject::nextID = 1;
 	GameObject* root = new GameObject();
 	root->SetName("ROOT");
-	return std::shared_ptr<GameObject>(root);
+	return root;
 }
 
 GameObject::GameObject() {
@@ -25,6 +25,10 @@ GameObject::GameObject(std::shared_ptr<GameObject> parent) : GameObject() {
 
 
 GameObject::~GameObject() {
+	// Huh?
+	if (true) {
+		int x = 0;
+	}
 }
 
 void GameObject::Destroy(std::shared_ptr<GameObject> object) {

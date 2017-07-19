@@ -79,7 +79,7 @@ class GoGame {
 	/// The root object is special and is held on it's own.
 	/// All objects in the scene must be children of this object. All game loop items depend on it.
 	/// </summary>
-	std::shared_ptr<GameObject> root;
+	std::weak_ptr<GameObject> root;
 
 	//TODO: Add a camera object here.
 

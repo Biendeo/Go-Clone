@@ -16,7 +16,7 @@ class GameObject {
 	/// </summary>
 	/// <param name="engine">A pointer to the engine. Should not be nullptr.</param>
 	/// <returns>The newly created root object.</returns>
-	static std::shared_ptr<GameObject> CreateRootObject(class GoGame* engine);
+	static GameObject* CreateRootObject(class GoGame* engine);
 
 	GameObject();
 	GameObject(std::shared_ptr<GameObject> parent);

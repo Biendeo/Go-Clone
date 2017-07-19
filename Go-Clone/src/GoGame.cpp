@@ -14,14 +14,16 @@ GoGame::GoGame() {
 	systemVars.fullscreen = false;
 	window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default);
 
-	root = nullptr;
+	root = std::shared_ptr<GameObject>(nullptr);
 	// Since root is nullptr right now, then the construction of the root object should correctly have a nullptr parent.
-	root = GameObject::CreateRootObject(this);
+	GameObject::CreateRootObject(this);
+	root = objects.at(1);
 }
 
 
 GoGame::~GoGame() {
-	GameObject::Destroy(root);
+	GameObject::Destroy(std::shared_ptr<GameObject>(root));
+	root.reset();
 	delete window;
 }
 
@@ -43,6 +45,8 @@ void GoGame::Start() {
 			}
 		}
 	}
+
+	std::cout << "The program is now exiting!\n";
 }
 
 const GameState& GoGame::GetGameState() const {
@@ -66,7 +70,13 @@ bool GoGame::ToggleFullscreen() {
 }
 
 std::shared_ptr<GameObject> GoGame::GetRootObject() {
-	return std::shared_ptr<GameObject>(root);
+	// Weak pointers can't be promoted to shared pointers if they're null.
+	// This check should get this to work properly.
+	if (root.expired()) {
+		return std::shared_ptr<GameObject>(nullptr);
+	} else {
+		return std::shared_ptr<GameObject>(root);
+	}
 }
 
 void GoGame::RegisterObject(std::shared_ptr<GameObject> object) {
