@@ -8,12 +8,10 @@
 
 GoGame::GoGame() {
 	//TODO: Arguments eventually.
-	std::string windowTitle = "Go Game";
 	sf::VideoMode videoMode;
 	videoMode.width = 800;
 	videoMode.height = 600;
-	sf::Uint32 style = sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close;
-	window = new sf::Window(videoMode, windowTitle, style);
+	window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default);
 }
 
 
@@ -22,7 +20,6 @@ GoGame::~GoGame() {
 }
 
 void GoGame::Start() {
-	//TODO: Create a game loop.
 	std::cout << "We're in the start function!\n";
 	std::cout << "If you see a rainbow traingle in the top-right corner, you're good!\n";
 
@@ -32,6 +29,8 @@ void GoGame::Start() {
 		while (window->pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				window->close();
+			} else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F) {
+				ToggleFullscreen();
 			} else {
 				RenderScene();
 				window->display();
@@ -44,6 +43,22 @@ const GameState& GoGame::GetGameState() const {
 	return gameState;
 }
 
+bool GoGame::ToggleFullscreen() {
+	delete window;
+	systemVars.windowWidth = 800;
+	systemVars.windowHeight = 600;
+	systemVars.screenWidth = sf::VideoMode::getDesktopMode().width;
+	systemVars.screenHeight = sf::VideoMode::getDesktopMode().height;
+	if (systemVars.fullscreen) {
+		window = new sf::Window(sf::VideoMode(systemVars.screenWidth, systemVars.screenHeight), systemVars.windowTitle, sf::Style::Fullscreen);
+		systemVars.fullscreen = false;
+	} else {
+		window = new sf::Window(sf::VideoMode(systemVars.windowWidth, systemVars.windowHeight), systemVars.windowTitle, sf::Style::Default);
+		systemVars.fullscreen = true;
+	}
+	return systemVars.fullscreen;
+}
+
 void GoGame::RenderScene() {
 	glClearColor(0.1f, 0.1f, 0.7f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -52,11 +67,11 @@ void GoGame::RenderScene() {
 	glBegin(GL_TRIANGLES);
 
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex2f(0.2, 0.2);
+	glVertex2f(0.2f, 0.2f);
 	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex2f(0.8, 0.2);
+	glVertex2f(0.8f, 0.2f);
 	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex2f(0.5, 0.8);
+	glVertex2f(0.5f, 0.8f);
 
 	glEnd();
 }
