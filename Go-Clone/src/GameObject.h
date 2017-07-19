@@ -18,10 +18,41 @@ class GameObject {
 	/// </summary>
 	/// <param name="engine">A pointer to the engine. Should not be nullptr.</param>
 	/// <returns>The newly created root object.</returns>
-	static GameObject* CreateRootObject(class GoGame* engine);
+	static std::shared_ptr<GameObject> CreateRootObject(class GoGame* engine);
 
-	GameObject();
-	GameObject(std::shared_ptr<GameObject> parent);
+	/// <summary>
+	/// Creates a new GameObject of the given type, and returns it.
+	/// This should not be called before CreateRootObject().
+	/// The given type should be a class derived from GameObject. The specifics of a class's construction should be defined in its constructor.
+	/// </summary>
+	/// <returns>The constructed object.</returns>
+	template<typename T> static std::shared_ptr<T> Create() {
+		GameObject* newObject = dynamic_cast<GameObject*>(new T());
+		if (newObject != nullptr) {
+			return std::shared_ptr<T>(newObject->GetSharedPointer());
+		} else {
+			//? Error here I guess.
+			return std::shared_ptr<T>();
+		}
+	}
+
+	/// <summary>
+	/// Creates a new GameObject of the given type, and returns it. The parent is set to the given parent.
+	/// This should not be called before CreateRootObject(0.
+	/// The given type should be a class derived from GameObject. The specifics of a class's construction should be defined in its constructor.
+	/// </summary>
+	/// <param name="parent">The parent object.</param>
+	/// <returns>The constructed object.</returns>
+	template<typename T> static std::shared_ptr<T> Create(std::shared_ptr<GameObject> parent) {
+		GameObject* newObject = dynamic_cast<GameObject*>(new T(parent));
+		if (newObject != nullptr) {
+			return std::shared_ptr<T>(newObject->GetSharedPointer());
+		} else {
+			//? Error here I guess.
+			return std::shared_ptr<T>();
+		}
+	}
+
 	~GameObject();
 
 	/// <summary>
@@ -79,6 +110,17 @@ class GameObject {
 	std::vector<std::shared_ptr<GameObject>> GetChildren();
 
 	protected:
+	/// <summary>
+	/// Constructs a regular object, and attaches it to the root.
+	/// </summary>
+	GameObject();
+
+	/// <summary>
+	/// Constructs a regular object, and attaches it to the given object. This shouldn't be called publicly, use the 
+	/// </summary>
+	/// <param name="parent">The object that will become the parent.</param>
+	GameObject(std::shared_ptr<GameObject> parent);
+
 	/// <summary>
 	/// A pointer to the engine object. This allows the objects to find other parts of data.
 	/// It should be passed into the CreateRootObject() function first, and then should never be nullptr.

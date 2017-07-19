@@ -28,21 +28,23 @@ GoGame::~GoGame() {
 
 void GoGame::Start() {
 	std::cout << "We're in the start function!\n";
-	std::cout << "If you see a rainbow traingle in the top-right corner, you're good!\n";
 
+	//! Remove this in production.
 	std::cout << "Putting in a couple of dummy objects and deleting them quickly.\n";
+	std::cout << "If the memory goes up, then there's a leak somewhere.\n";
 
-	//TODO: Now that I'm here, I realised that I should make this a static function.
 	for (int i = 0; i < 10000; ++i) {
-		auto dummyVar = new GameObject();
-		dummyVar->SetName("Item 1");
-		auto dummyTwo = new GameObject(dummyVar->GetSharedPointer());
+		auto dummyOne = GameObject::Create<GameObject>();
+		dummyOne->SetName("Item 1");
+		auto dummyTwo = GameObject::Create<GameObject>(dummyOne);
 		dummyTwo->SetName("Item 2");
 
-		dummyVar->Destroy();
+		dummyOne->Destroy();
 	}
 
 	std::cout << "Seems okay.\n";
+
+	std::cout << "If you see a rainbow traingle in the top-right corner, you're good!\n";
 
 	// This is a standard while loop described on the documentation page.
 	while (window->isOpen()) {
@@ -105,6 +107,7 @@ std::shared_ptr<GameObject> GoGame::GetSharedPointer(uint32_t ID) {
 }
 
 void GoGame::RenderScene() {
+	//TODO: This is just for demoing. Fix this later on.
 	glClearColor(0.1f, 0.1f, 0.7f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
