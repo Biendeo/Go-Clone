@@ -50,13 +50,18 @@ void GoGame::Start() {
 	while (window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
-			if (event.type == sf::Event::Closed) {
-				window->close();
-			} else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F) {
-				ToggleFullscreen();
+			if (!input.HandleInput(event)) {
+				if (event.type == sf::Event::Closed) {
+					window->close();
+				} else {
+					RenderScene();
+					window->display();
+					input.UpdateState();
+				}
 			} else {
-				RenderScene();
-				window->display();
+				if (input.GetKeyDown(sf::Keyboard::Key::F)) {
+					ToggleFullscreen();
+				}
 			}
 		}
 	}
@@ -104,6 +109,10 @@ void GoGame::UnregisterObject(std::shared_ptr<GameObject> object) {
 
 std::shared_ptr<GameObject> GoGame::GetSharedPointer(uint32_t ID) {
 	return std::shared_ptr<GameObject>(objects.at(ID));
+}
+
+const Input& GoGame::GetInput() const {
+	return input;
 }
 
 void GoGame::RenderScene() {

@@ -5,6 +5,7 @@
 
 #include "GameState.h"
 #include "GameObject.h"
+#include "Input.h"
 
 /// <summary>
 /// Stores information about the current system, this is mostly used for window management and hardware polling.
@@ -71,6 +72,12 @@ class GoGame {
 	/// <returns>A shared pointer of the object.</returns>
 	std::shared_ptr<GameObject> GetSharedPointer(uint32_t ID);
 
+	/// <summary>
+	/// Gets a constant version of the Input object. This is useful for objects to determine input logic themselves.
+	/// </summary>
+	/// <returns>A constant version of the Input object.</returns>
+	const Input& GetInput() const;
+
 	private:
 	/// <summary>
 	/// Renders the current game scene. This should only be called in the game loop.
@@ -105,4 +112,9 @@ class GoGame {
 	/// The system variables, particularly for window management and hardware polling. Game specific variables should not be here.
 	/// </summary>
 	SystemVariables systemVars;
+
+	/// <summary>
+	/// Handles all the user-level input of the engine. Inputs are either handled here, or spit back out (which means they're engine related).
+	/// </summary>
+	Input input;
 };
