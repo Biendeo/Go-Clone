@@ -14,6 +14,9 @@ GoGame::GoGame() {
 	systemVars.fullscreen = false;
 	window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default);
 
+	// This is to prevent typing style input.
+	window->setKeyRepeatEnabled(false);
+
 	root = std::shared_ptr<GameObject>(nullptr);
 	// Since root is nullptr right now, then the construction of the root object should correctly have a nullptr parent.
 	GameObject::CreateRootObject(this);
@@ -53,17 +56,17 @@ void GoGame::Start() {
 			if (!input.HandleInput(event)) {
 				if (event.type == sf::Event::Closed) {
 					window->close();
-				} else {
-					RenderScene();
-					window->display();
-					input.UpdateState();
 				}
 			} else {
-				if (input.IsKeyDown(sf::Keyboard::Key::F)) {
-					ToggleFullscreen();
-				}
+
 			}
 		}
+		if (input.IsKeyDown(sf::Keyboard::Key::F)) {
+			ToggleFullscreen();
+		}
+		RenderScene();
+		window->display();
+		input.UpdateState();
 	}
 
 	std::cout << "The program is now exiting!\n";

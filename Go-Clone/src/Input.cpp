@@ -1,12 +1,13 @@
 #include "Input.h"
 
+#include <iostream>
 #include <array>
 
 /// <summary>
 /// An instant of all the current input. Everything should exist within this.
 /// </summary>
 struct InputState {
-	static const uint8_t totalKeys = sf::Keyboard::Key::KeyCount;
+	static const uint8_t totalKeys = sf::Keyboard::Key::KeyCount * 2;
 	std::array<bool, totalKeys> keyboardState;
 	//TODO: Add more stuff here for more inputs.
 };
@@ -42,10 +43,16 @@ void Input::UpdateState() {
 bool Input::HandleInput(sf::Event event) {
 	switch (event.type) {
 		case sf::Event::EventType::KeyPressed:
-			nextState->keyboardState[event.key.code] = true;
+			std::cout << "Pressed: " << event.key.code << "\n";
+			if (event.key.code >= 0) {
+				nextState->keyboardState[event.key.code] = true;
+			}
 			break;
 		case sf::Event::EventType::KeyReleased:
-			nextState->keyboardState[event.key.code] = false;
+			std::cout << "Released: " << event.key.code << "\n";
+			if (event.key.code >= 0) {
+				nextState->keyboardState[event.key.code] = false;
+			}
 			break;
 		case sf::Event::EventType::JoystickButtonPressed:
 		case sf::Event::EventType::JoystickButtonReleased:

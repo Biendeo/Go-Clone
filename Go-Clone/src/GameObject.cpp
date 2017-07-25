@@ -13,6 +13,15 @@ std::shared_ptr<GameObject> GameObject::CreateRootObject(GoGame* engine) {
 	return root->GetSharedPointer();
 }
 
+void GameObject::RemoveComponent(Component* component) {
+	for (size_t i = 0; i < components.size(); ++i) {
+		if (components[i].get() == component) {
+			components.erase(components.begin() + i);
+			break;
+		}
+	}
+}
+
 GameObject::GameObject() {
 	SetID(nextID++);
 	engine->RegisterObject(std::shared_ptr<GameObject>(this));

@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\GameState.cpp" />
@@ -166,6 +167,8 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\ComponentTypes.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\Constants.h" />

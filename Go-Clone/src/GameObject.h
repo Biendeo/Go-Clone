@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-//TODO: Set up children.
+#include "Component.h"
 
 /// <summary>
 /// An object in the current scene graph. Almost everything that exists should inherit from this.
@@ -27,6 +27,7 @@ class GameObject {
 	/// </summary>
 	/// <returns>The constructed object.</returns>
 	template<typename T> static std::shared_ptr<T> Create() {
+		static_assert(std::is_base_of<GameObject, T>, "Create does not have a valid GameObject");
 		GameObject* newObject = dynamic_cast<GameObject*>(new T());
 		if (newObject != nullptr) {
 			return std::shared_ptr<T>(newObject->GetSharedPointer());
@@ -38,18 +39,19 @@ class GameObject {
 
 	/// <summary>
 	/// Creates a new GameObject of the given type, and returns it. The parent is set to the given parent.
-	/// This should not be called before CreateRootObject(0.
+	/// This should not be called before CreateRootObject().
 	/// The given type should be a class derived from GameObject. The specifics of a class's construction should be defined in its constructor.
 	/// </summary>
 	/// <param name="parent">The parent object.</param>
 	/// <returns>The constructed object.</returns>
 	template<typename T> static std::shared_ptr<T> Create(std::shared_ptr<GameObject> parent) {
+		static_assert(std::is_base_of<GameObject, T>, "Create does not have a valid GameObject");
 		GameObject* newObject = dynamic_cast<GameObject*>(new T(parent));
 		if (newObject != nullptr) {
 			return std::shared_ptr<T>(newObject->GetSharedPointer());
 		} else {
 			//? Error here I guess.
-			return std::shared_ptr<T>();
+			return std::shared_ptr<T>(nullptr);
 		}
 	}
 
@@ -109,6 +111,59 @@ class GameObject {
 	/// <returns>A vector of all the children.</returns>
 	std::vector<std::shared_ptr<GameObject>> GetChildren();
 
+	/// <summary>
+	/// Returns the first component that matches the given type, or nullptr if no matches.
+	/// This will match any subclasses of the given component type, so be specific, or use GetComponents().
+	/// </summary>
+	/// <returns>The first component that matches the given type, or nullptr if no matches.</returns>
+	template<typename T> std::shared_ptr<T> GetComponent() {
+		static_assert(std::is_base_of<Component, T>, "GetComponent does not have a valid component");
+		for (std::shared_ptr<Component> c : components) {
+			if (c->CanCast<T>()) {
+				return std::dynamic_pointer_cast<T>(c);
+			}
+		}
+		return std::shared_ptr<T>(nullptr);
+	}
+
+	/// <summary>
+	/// Returns all the components that match the given type. It'll be empty if there's no matches.
+	/// </summary>
+	/// <returns>All the components that match the given type, empty if no matches.</returns>
+	template<typename T> std::vector<std::shared_ptr<T>> GetComponents() {
+		static_assert(std::is_base_of<Component, T>, "GetComponents does not have a valid component");
+		std::vector<std::shared_ptr<T>> matchedComponents;
+		for (std::shared_ptr<Component> c : components) {
+			if (c->CanCast<T>()) {
+				matchedComponents.insert(c);
+			}
+		}
+		return matchedComponents;
+	}
+
+	/// <summary>
+	/// Creates a component and attaches it to this GameObject (or nullptr if it was unable to create (for example, if the component is unique and already exists)).
+	/// </summary>
+	/// <returns>The component (or nullptr if it wasn't made).</returns>
+	template<typename T> std::shared_ptr<T> AddComponent() {
+		static_assert(std::is_base_of<Component, T>, "AddComponent does not have a valid component");
+		// If a component of the type exists on this object, and it's unique, it won't be made.
+		if (GetComponent<T>() != nullptr && T.unique) {
+			return std::shared_ptr<T>(nullptr);
+		} else {
+			std::shared_ptr<T> component = std::shared_ptr<T>(new T());
+			components.insert(component);
+			return component;
+		}
+	}
+
+	/// <summary>
+	/// Removes the given component from this object.
+	/// Do not call this directly; use the component's Destroy() method instead.
+	/// </summary>
+	/// <param name="component">The component to be removed.</param>
+	void RemoveComponent(Component* component);
+
 	protected:
 	/// <summary>
 	/// Constructs a regular object, and attaches it to the root.
@@ -150,6 +205,12 @@ class GameObject {
 	/// Do not modify this directly, use the SetParent() function to move the children.
 	/// </summary>
 	std::map<uint32_t, std::weak_ptr<GameObject>> children;
+
+	/// <summary>
+	/// The object's components. GameObjects contain any number of components, and control ownership of them.
+	/// Components should be accessed through the helper functions rather than managed here.
+	/// </summary>
+	std::vector<std::shared_ptr<Component>> components;
 
 	private:
 	/// <summary>
