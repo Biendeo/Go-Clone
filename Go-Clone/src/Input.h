@@ -33,21 +33,21 @@ class Input {
 	/// </summary>
 	/// <param name="key">The key that was pressed.</param>
 	/// <returns>Whether it was pressed down in the last update.</returns>
-	bool GetKeyDown(sf::Keyboard::Key key) const;
+	bool IsKeyDown(sf::Keyboard::Key key) const;
 
 	/// <summary>
 	/// Gets whether the given key was released in the last update.
 	/// </summary>
 	/// <param name="key">The key that was released.</param>
 	/// <returns>Whether it was released in the last update.</returns>
-	bool GetKeyUp(sf::Keyboard::Key key) const;
+	bool IsKeyUp(sf::Keyboard::Key key) const;
 
 	/// <summary>
 	/// Gets whether the given key is current down as of the last update.
 	/// </summary>
 	/// <param name="key">The key that is down.</param>
 	/// <returns>Whether it is currently down in the last update.</returns>
-	bool GetKey(sf::Keyboard::Key key) const;
+	bool IsKey(sf::Keyboard::Key key) const;
 
 	private:
 	/// <summary>

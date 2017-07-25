@@ -59,7 +59,7 @@ void GoGame::Start() {
 					input.UpdateState();
 				}
 			} else {
-				if (input.GetKeyDown(sf::Keyboard::Key::F)) {
+				if (input.IsKeyDown(sf::Keyboard::Key::F)) {
 					ToggleFullscreen();
 				}
 			}

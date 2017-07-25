@@ -62,14 +62,14 @@ bool Input::HandleInput(sf::Event event) {
 	return true;
 }
 
-bool Input::GetKeyDown(sf::Keyboard::Key key) const {
+bool Input::IsKeyDown(sf::Keyboard::Key key) const {
 	return currentState->keyboardState[key] && !previousState->keyboardState[key];
 }
 
-bool Input::GetKeyUp(sf::Keyboard::Key key) const {
+bool Input::IsKeyUp(sf::Keyboard::Key key) const {
 	return !currentState->keyboardState[key] && previousState->keyboardState[key];
 }
 
-bool Input::GetKey(sf::Keyboard::Key key) const {
+bool Input::IsKey(sf::Keyboard::Key key) const {
 	return currentState->keyboardState[key];
 }
