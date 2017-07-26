@@ -22,6 +22,10 @@ void GameObject::RemoveComponent(Component* component) {
 	}
 }
 
+GoGame* GameObject::GetEngine() {
+	return engine;
+}
+
 GameObject::GameObject() {
 	SetID(nextID++);
 	engine->RegisterObject(std::shared_ptr<GameObject>(this));

@@ -27,7 +27,7 @@ class GameObject {
 	/// </summary>
 	/// <returns>The constructed object.</returns>
 	template<typename T> static std::shared_ptr<T> Create() {
-		static_assert(std::is_base_of<GameObject, T>, "Create does not have a valid GameObject");
+		static_assert(std::is_base_of<GameObject, T>::value, "Create does not have a valid GameObject");
 		GameObject* newObject = dynamic_cast<GameObject*>(new T());
 		if (newObject != nullptr) {
 			return std::shared_ptr<T>(newObject->GetSharedPointer());
@@ -45,7 +45,7 @@ class GameObject {
 	/// <param name="parent">The parent object.</param>
 	/// <returns>The constructed object.</returns>
 	template<typename T> static std::shared_ptr<T> Create(std::shared_ptr<GameObject> parent) {
-		static_assert(std::is_base_of<GameObject, T>, "Create does not have a valid GameObject");
+		static_assert(std::is_base_of<GameObject, T>::value, "Create does not have a valid GameObject");
 		GameObject* newObject = dynamic_cast<GameObject*>(new T(parent));
 		if (newObject != nullptr) {
 			return std::shared_ptr<T>(newObject->GetSharedPointer());
@@ -117,10 +117,10 @@ class GameObject {
 	/// </summary>
 	/// <returns>The first component that matches the given type, or nullptr if no matches.</returns>
 	template<typename T> std::shared_ptr<T> GetComponent() {
-		static_assert(std::is_base_of<Component, T>, "GetComponent does not have a valid component");
+		static_assert(std::is_base_of<Component, T>::value, "GetComponent does not have a valid component");
 		for (std::shared_ptr<Component> c : components) {
 			if (c->CanCast<T>()) {
-				return std::dynamic_pointer_cast<T>(c);
+				return std::static_pointer_cast<T>(c);
 			}
 		}
 		return std::shared_ptr<T>(nullptr);
@@ -131,11 +131,11 @@ class GameObject {
 	/// </summary>
 	/// <returns>All the components that match the given type, empty if no matches.</returns>
 	template<typename T> std::vector<std::shared_ptr<T>> GetComponents() {
-		static_assert(std::is_base_of<Component, T>, "GetComponents does not have a valid component");
+		static_assert(std::is_base_of<Component, T>::value, "GetComponents does not have a valid component");
 		std::vector<std::shared_ptr<T>> matchedComponents;
 		for (std::shared_ptr<Component> c : components) {
 			if (c->CanCast<T>()) {
-				matchedComponents.insert(c);
+				matchedComponents.push_back(std::static_pointer_cast<T>(c));
 			}
 		}
 		return matchedComponents;
@@ -146,13 +146,16 @@ class GameObject {
 	/// </summary>
 	/// <returns>The component (or nullptr if it wasn't made).</returns>
 	template<typename T> std::shared_ptr<T> AddComponent() {
-		static_assert(std::is_base_of<Component, T>, "AddComponent does not have a valid component");
+		static_assert(std::is_base_of<Component, T>::value, "AddComponent does not have a valid component");
 		// If a component of the type exists on this object, and it's unique, it won't be made.
 		if (GetComponent<T>() != nullptr && T.unique) {
 			return std::shared_ptr<T>(nullptr);
 		} else {
 			std::shared_ptr<T> component = std::shared_ptr<T>(new T());
 			components.insert(component);
+			if (dynamic_cast<Wakeable>(component) != nullptr) {
+				engine->AddToAwakeQueue(std::static_pointer_cast<Wakeable>(component));
+			}
 			return component;
 		}
 	}
@@ -163,6 +166,12 @@ class GameObject {
 	/// </summary>
 	/// <param name="component">The component to be removed.</param>
 	void RemoveComponent(Component* component);
+
+	/// <summary>
+	/// Gets the game engine. This is useful for accessing the engine from a component. This will always be valid.
+	/// </summary>
+	/// <returns>The engine.</returns>
+	class GoGame* GetEngine();
 
 	protected:
 	/// <summary>

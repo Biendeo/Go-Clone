@@ -1,8 +1,10 @@
 #pragma once
 
 #include <map>
+#include <queue>
 #include <SFML/Window.hpp>
 
+#include "ComponentTypes.h"
 #include "GameState.h"
 #include "GameObject.h"
 #include "Input.h"
@@ -78,11 +80,32 @@ class GoGame {
 	/// <returns>A constant version of the Input object.</returns>
 	const Input& GetInput() const;
 
+	/// <summary>
+	/// Adds the object to the awake queue for the next frame. This doesn't need to be called manually.
+	/// </summary>
+	/// <param name="wakableComponent">The component that will be woken up.</param>
+	void AddToAwakeQueue(std::shared_ptr<Wakeable> wakableComponent);
+
 	private:
 	/// <summary>
 	/// Renders the current game scene. This should only be called in the game loop.
 	/// </summary>
 	void RenderScene();
+
+	/// <summary>
+	/// Initialises all objects that are in the awake queue.
+	/// </summary>
+	void Awake();
+
+	/// <summary>
+	/// Updates all objects in the scene.
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// Updates all objects in the scene after Update.
+	/// </summary>
+	void LateUpdate();
 
 	/// <summary>
 	/// Contains every object in the scene. Shared pointers are used since this has ownership of them.
@@ -94,6 +117,11 @@ class GoGame {
 	/// All objects in the scene must be children of this object. All game loop items depend on it.
 	/// </summary>
 	std::weak_ptr<GameObject> root;
+
+	/// <summary>
+	/// This tracks all the components that need to wake up before the next frame. It should be emptied after the Awake function.
+	/// </summary>
+	std::queue<std::weak_ptr<Wakeable>> awakeQueue;
 
 	//TODO: Add a camera object here.
 

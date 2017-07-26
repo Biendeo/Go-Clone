@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 /// <summary>
 /// Something that can be attached on to a GameObject. This class itself is abstract and should be extended.
 /// Different components can have different properties, so it's important to make sure that components inherit the right properties.
@@ -20,7 +22,7 @@ class Component {
 	/// </summary>
 	/// <returns>The object in the given type, or nullptr if not possible.</returns>
 	template<typename T> T* Cast() {
-		return possibleCast = dynamic_cast<T*>(this);
+		return possibleCast = static_cast<T*>(this);
 	}
 
 	/// <summary>
@@ -28,8 +30,14 @@ class Component {
 	/// </summary>
 	/// <returns>Whether the component can be casted to the given type or not.</returns>
 	template<typename T> bool CanCast() {
-		return dynamic_cast<T*>(this) != nullptr;
+		return static_cast<T*>(this) != nullptr;
 	}
+
+	/// <summary>
+	/// Returns the GameObject this component is attached to. This is properly managed by the engine.
+	/// </summary>
+	/// <returns>The GameObject this component is attached to.</returns>
+	std::shared_ptr<GameObject> GetGameObject();
 
 	/// <summary>
 	/// This determines whether only one of this component can be on an object at a time or not.

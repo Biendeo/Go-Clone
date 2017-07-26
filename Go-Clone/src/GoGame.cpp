@@ -55,7 +55,7 @@ void GoGame::Start() {
 		while (window->pollEvent(event)) {
 			if (!input.HandleInput(event)) {
 				if (event.type == sf::Event::Closed) {
-					window->close();
+window->close();
 				}
 			} else {
 
@@ -118,6 +118,10 @@ const Input& GoGame::GetInput() const {
 	return input;
 }
 
+void GoGame::AddToAwakeQueue(std::shared_ptr<Wakeable> wakeableComponent) {
+	awakeQueue.push(std::weak_ptr<Wakeable>(wakeableComponent));
+}
+
 void GoGame::RenderScene() {
 	//TODO: This is just for demoing. Fix this later on.
 	glClearColor(0.1f, 0.1f, 0.7f, 1.0f);
@@ -134,4 +138,42 @@ void GoGame::RenderScene() {
 	glVertex2f(0.5f, 0.8f);
 
 	glEnd();
+}
+
+void GoGame::Awake() {
+	while (!awakeQueue.empty()) {
+		std::shared_ptr<Wakeable> object = std::shared_ptr<Wakeable>(awakeQueue.front());
+		awakeQueue.pop();
+		object->Awake();
+	}
+}
+
+void GoGame::Update() {
+	//? Should I be following the tree rather than using my copied list of objects?
+	std::vector<std::shared_ptr<GameObject>> copiedObjects;
+	for (auto& p : objects) {
+		copiedObjects.push_back(p.second);
+	}
+	for (auto& object : copiedObjects) {
+		for (auto& component : object->GetComponents<Updatable>()) {
+			if (component->IsActive()) {
+				component->Update();
+			}
+		}
+	}
+}
+
+void GoGame::LateUpdate() {
+	//? Should I be following the tree rather than using my copied list of objects?
+	std::vector<std::shared_ptr<GameObject>> copiedObjects;
+	for (auto& p : objects) {
+		copiedObjects.push_back(p.second);
+	}
+	for (auto& object : copiedObjects) {
+		for (auto& component : object->GetComponents<LateUpdatable>()) {
+			if (component->IsActive()) {
+				component->LateUpdate();
+			}
+		}
+	}
 }

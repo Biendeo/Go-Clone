@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Component.h"
+
 //? Should I shift this into a .cpp file or just leave it in the header?
 /// <summary>
 /// All component types inherit from this base class.
 /// This just allows for these different types to be individually enabled or disabled (ie. if you want to disable an object's LateUpdate type.
 /// </summary>
-class ComponentType {
+class ComponentType : public Component {
 	public:
 	/// <summary>
 	/// Returns whether the current function is active or not.
@@ -47,7 +49,7 @@ class Wakeable : public ComponentType {
 class Updatable : public ComponentType {
 	public:
 	/// <summary>
-	/// A function that is called once per frame.
+	/// A function that is called once per frame. This doesn't need to be called manually, the engine will handle this for you.
 	/// </summary>
 	virtual void Update();
 };

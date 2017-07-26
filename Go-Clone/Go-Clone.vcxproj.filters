@@ -33,6 +33,9 @@
     <ClCompile Include="src\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GoGame.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ComponentTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
