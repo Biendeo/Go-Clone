@@ -26,6 +26,23 @@ GoGame* GameObject::GetEngine() {
 	return engine;
 }
 
+void GameObject::RenderCall() {
+	//TODO: Add a is enabled call.
+	std::vector<std::shared_ptr<Renderable>> renderComponents = GetComponents<Renderable>();
+
+	// Your render components should modify anything, so this should be fine.
+	for (auto& renderComponent : renderComponents) {
+		if (renderComponent->IsActive()) {
+			renderComponent->Render();
+		}
+	}
+
+	for (auto& childPair : children) {
+		std::shared_ptr<GameObject> child = std::shared_ptr<GameObject>(childPair.second);
+		child->RenderCall();
+	}
+}
+
 GameObject::GameObject() {
 	SetID(nextID++);
 	engine->RegisterObject(std::shared_ptr<GameObject>(this));

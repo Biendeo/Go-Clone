@@ -173,6 +173,12 @@ class GameObject {
 	/// <returns>The engine.</returns>
 	class GoGame* GetEngine();
 
+	/// <summary>
+	/// Calls the render function on any renderable components, then calls this on any children.
+	/// This doesn't need to be called manually, the engine should call this itself.
+	/// </summary>
+	void RenderCall();
+
 	protected:
 	/// <summary>
 	/// Constructs a regular object, and attaches it to the root.
