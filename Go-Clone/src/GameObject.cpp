@@ -1,6 +1,9 @@
 #include "GameObject.h"
 
+#include <SFML/OpenGL.hpp>
+
 #include "GoGame.h"
+#include "Transform.h"
 
 GoGame* GameObject::engine = nullptr;
 uint32_t GameObject::nextID = 1;
@@ -28,6 +31,17 @@ GoGame* GameObject::GetEngine() {
 
 void GameObject::RenderCall() {
 	//TODO: Add a is enabled call.
+	glPushMatrix();
+	std::shared_ptr<Transform> transform = GetComponent<Transform>();
+	if (transform != nullptr) {
+		glTranslatef(transform->Translate().x, transform->Translate().y, transform->Translate().z);
+		//TODO: Formally do the radians to degrees business. This is...ergh...
+		glRotatef(transform->Rotate().x * 180.0f / 3.14f, 1.0f, 0.0f, 0.0f);
+		glRotatef(transform->Rotate().y * 180.0f / 3.14f, 0.0f, 1.0f, 0.0f);
+		glRotatef(transform->Rotate().z * 180.0f / 3.14f, 0.0f, 0.0f, 1.0f);
+		glScalef(transform->Scale().x, transform->Scale().y, transform->Scale().z);
+	}
+
 	std::vector<std::shared_ptr<Renderable>> renderComponents = GetComponents<Renderable>();
 
 	// Your render components should modify anything, so this should be fine.
@@ -41,6 +55,8 @@ void GameObject::RenderCall() {
 		std::shared_ptr<GameObject> child = std::shared_ptr<GameObject>(childPair.second);
 		child->RenderCall();
 	}
+
+	glPopMatrix();
 }
 
 GameObject::GameObject() {

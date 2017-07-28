@@ -8,7 +8,7 @@
 #include "GameObject.h"
 
 #include "BasicCube.h"
-
+#include "Transform.h"
 
 GoGame::GoGame() {
 	//TODO: Arguments eventually.
@@ -51,7 +51,13 @@ void GoGame::Start() {
 
 	std::cout << "Seems okay.\n";
 
-	std::cout << "If you see a rainbow traingle in the top-right corner, you're good!\n";
+	auto spinningCube = GameObject::Create<BasicCube>();
+	spinningCube->SetName("The Cube!");
+	auto transform = spinningCube->GetComponent<Transform>();
+	transform->Scale() = glm::vec3{0.5f, 0.5f, 0.5f};
+	transform->Rotate().z = 1.5;
+
+	std::cout << "You should see a spinning cube. (it might be straight on)\n";
 
 	// This is a standard while loop described on the documentation page.
 	while (window->isOpen()) {
@@ -59,10 +65,8 @@ void GoGame::Start() {
 		while (window->pollEvent(event)) {
 			if (!input.HandleInput(event)) {
 				if (event.type == sf::Event::Closed) {
-window->close();
+					window->close();
 				}
-			} else {
-
 			}
 		}
 		if (input.IsKeyDown(sf::Keyboard::Key::F)) {
@@ -132,16 +136,17 @@ void GoGame::RenderScene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glViewport(0, 0, window->getSize().x, window->getSize().y);
-	glBegin(GL_TRIANGLES);
+	glEnable(GL_LIGHTING);
 
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex2f(0.2f, 0.2f);
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex2f(0.8f, 0.2f);
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex2f(0.5f, 0.8f);
+	glTranslatef(-5.0f, 5.0f, -3.0f);
+	glEnable(GL_LIGHT0);
 
-	glEnd();
+	glTranslatef(5.0f, -5.0f, 3.0f);
+
+	std::shared_ptr<GameObject>(root)->RenderCall();
+	
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
 }
 
 void GoGame::Awake() {

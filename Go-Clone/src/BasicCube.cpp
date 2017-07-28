@@ -14,7 +14,7 @@ class AutoRotate : public Updateable {
 
 	void Update() override {
 		auto transform = GetGameObject()->GetComponent<Transform>();
-		transform->Rotate().y += 0.001f;
+		transform->Rotate().y += 0.0001f;
 	}
 };
 

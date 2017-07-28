@@ -29,9 +29,10 @@ class GameObject {
 	/// <returns>The constructed object.</returns>
 	template<typename T> static std::shared_ptr<T> Create() {
 		static_assert(std::is_base_of<GameObject, T>::value, "Create does not have a valid GameObject");
-		GameObject* newObject = dynamic_cast<GameObject*>(new T());
+		T* newObject = new T();
 		if (newObject != nullptr) {
-			return std::shared_ptr<T>(newObject->GetSharedPointer());
+			auto sharedPointer = newObject->GetSharedPointer();
+			return std::static_pointer_cast<T>(sharedPointer);
 		} else {
 			//? Error here I guess.
 			return std::shared_ptr<T>();
