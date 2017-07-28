@@ -6,7 +6,6 @@
 
 #include "ComponentTypes.h"
 #include "GameState.h"
-#include "GameObject.h"
 #include "Input.h"
 
 /// <summary>

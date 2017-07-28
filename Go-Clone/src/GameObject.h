@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Component.h"
+#include "GoGame.h"
 
 /// <summary>
 /// An object in the current scene graph. Almost everything that exists should inherit from this.
@@ -148,14 +149,11 @@ class GameObject {
 	template<typename T> std::shared_ptr<T> AddComponent() {
 		static_assert(std::is_base_of<Component, T>::value, "AddComponent does not have a valid component");
 		// If a component of the type exists on this object, and it's unique, it won't be made.
-		if (GetComponent<T>() != nullptr && T.unique) {
+		if (T::unique && GetComponent<T>() != nullptr) {
 			return std::shared_ptr<T>(nullptr);
 		} else {
-			std::shared_ptr<T> component = std::shared_ptr<T>(new T());
-			components.insert(component);
-			if (dynamic_cast<Wakeable>(component) != nullptr) {
-				engine->AddToAwakeQueue(std::static_pointer_cast<Wakeable>(component));
-			}
+			std::shared_ptr<T> component = std::shared_ptr<T>(new T(this));
+			components.push_back(component);
 			return component;
 		}
 	}

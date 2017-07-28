@@ -5,6 +5,10 @@
 
 #include <SFML/OpenGL.hpp>
 
+#include "GameObject.h"
+
+#include "BasicCube.h"
+
 
 GoGame::GoGame() {
 	//TODO: Arguments eventually.
@@ -155,7 +159,7 @@ void GoGame::Update() {
 		copiedObjects.push_back(p.second);
 	}
 	for (auto& object : copiedObjects) {
-		for (auto& component : object->GetComponents<Updatable>()) {
+		for (auto& component : object->GetComponents<Updateable>()) {
 			if (component->IsActive()) {
 				component->Update();
 			}
@@ -170,7 +174,7 @@ void GoGame::LateUpdate() {
 		copiedObjects.push_back(p.second);
 	}
 	for (auto& object : copiedObjects) {
-		for (auto& component : object->GetComponents<LateUpdatable>()) {
+		for (auto& component : object->GetComponents<LateUpdateable>()) {
 			if (component->IsActive()) {
 				component->LateUpdate();
 			}

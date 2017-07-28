@@ -9,21 +9,19 @@
 /// </summary>
 class ComponentType : public Component {
 	public:
+	ComponentType(class GameObject* gameObject);
+
 	/// <summary>
 	/// Returns whether the current function is active or not.
 	/// </summary>
 	/// <returns>Whether the current function is active or not.</returns>
-	bool IsActive() const {
-		return active;
-	}
+	bool IsActive() const;
 	
 	/// <summary>
 	/// Sets the function to be active or not.
 	/// </summary>
 	/// <param name="active">The new state of the function.</param>
-	void SetActive(bool active) {
-		this->active = active;
-	}
+	void SetActive(bool active);
 
 	private:
 	/// <summary>
@@ -37,32 +35,38 @@ class ComponentType : public Component {
 /// </summary>
 class Wakeable : public ComponentType {
 	public:
+	Wakeable(class GameObject* gameObject);
+
 	/// <summary>
 	/// A function that is called when the object is created into the scene. This happens after constructors, but before the updates of the next scene.
 	/// </summary>
-	virtual void Awake();
+	virtual void Awake() = 0;
 };
 
 /// <summary>
 /// Refers to a component that updates over time.
 /// </summary>
-class Updatable : public ComponentType {
+class Updateable : public ComponentType {
 	public:
+	Updateable(class GameObject* gameObject);
+
 	/// <summary>
 	/// A function that is called once per frame. This doesn't need to be called manually, the engine will handle this for you.
 	/// </summary>
-	virtual void Update();
+	virtual void Update() = 0;
 };
 
 /// <summary>
-/// Refers to a component that updates over time after regular Updatable objects.
+/// Refers to a component that updates over time after regular Updateable objects.
 /// </summary>
-class LateUpdatable : public ComponentType {
+class LateUpdateable : public ComponentType {
 	public:
+	LateUpdateable(class GameObject* gameObject);
+
 	/// <summary>
 	/// A function that is called once per frame. This version is called after Update, which is useful if anything relies on other objects.
 	/// </summary>
-	virtual void LateUpdate();
+	virtual void LateUpdate() = 0;
 };
 
 /// <summary>
@@ -70,8 +74,10 @@ class LateUpdatable : public ComponentType {
 /// </summary>
 class Renderable : public ComponentType {
 	public:
+	Renderable(class GameObject* gameObject);
+
 	/// <summary>
 	/// A function that is called specifically to draw something.
 	/// </summary>
-	virtual void Render();
+	virtual void Render() = 0;
 };
