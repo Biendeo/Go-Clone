@@ -55,7 +55,8 @@ void GoGame::Start() {
 	spinningCube->SetName("The Cube!");
 	auto transform = spinningCube->GetComponent<Transform>();
 	transform->Scale() = glm::vec3{0.5f, 0.5f, 0.5f};
-	transform->Rotate().z = 1.5;
+	transform->Rotate().z = 0.5f;
+	transform->Rotate().x = 0.5f;
 
 	std::cout << "You should see a spinning cube. (it might be straight on)\n";
 
@@ -133,15 +134,28 @@ void GoGame::AddToAwakeQueue(std::shared_ptr<Wakeable> wakeableComponent) {
 void GoGame::RenderScene() {
 	//TODO: This is just for demoing. Fix this later on.
 	glClearColor(0.1f, 0.1f, 0.7f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glFrustum(-0.1f, 0.1f, -0.1f, 0.1f, 1.0f, 500.0f);
+
+	glDepthMask(true);
+	glClearDepth(500.0f);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glViewport(0, 0, window->getSize().x, window->getSize().y);
+	glMatrixMode(GL_MODELVIEW);
+
 	glEnable(GL_LIGHTING);
 
 	glTranslatef(-5.0f, 5.0f, -3.0f);
 	glEnable(GL_LIGHT0);
 
 	glTranslatef(5.0f, -5.0f, 3.0f);
+
+	//glTranslatef(0.0f, 0.0f, -3.0f);
 
 	std::shared_ptr<GameObject>(root)->RenderCall();
 	

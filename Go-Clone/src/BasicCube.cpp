@@ -28,36 +28,48 @@ class CubeRenderer : public Renderable {
 		glColor3f(color.r, color.g, color.b);
 
 		//TODO: Change this to pre-buffered objects.
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK, GL_LINE);
 		glBegin(GL_TRIANGLES);
 
-		glNormal3f(-1.0f, 0.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-		glVertex3f(-1.0f, -1.0f, 1.0f);
-		glVertex3f(-1.0f, 1.0f, 1.0f);
-
-		glNormal3f(0.0f, 0.0f, -1.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
-		glVertex3f(-1.0f, 1.0f, -1.0f);
-
 		glNormal3f(0.0f, -1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
 		glVertex3f(-1.0f, -1.0f, -1.0f);
 		glVertex3f(1.0f, -1.0f, -1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
 
-		glNormal3f(0.0f, 0.0f, -1.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
+		glNormal3f(0.0f, -1.0f, 0.0f);
 		glVertex3f(1.0f, -1.0f, -1.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
+
+		glNormal3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
+		glVertex3f(-1.0f, 1.0f, 1.0f);
+
+		glNormal3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, 1.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+		glVertex3f(-1.0f, 1.0f, 1.0f);
+
+		glNormal3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+
+		glNormal3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
 
 		glNormal3f(-1.0f, 0.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, -1.0f);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
 		glVertex3f(-1.0f, 1.0f, 1.0f);
 		glVertex3f(-1.0f, 1.0f, -1.0f);
 
-		glNormal3f(0.0f, -1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
+		glNormal3f(-1.0f, 0.0f, 0.0f);
 		glVertex3f(-1.0f, -1.0f, 1.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
 		glVertex3f(-1.0f, -1.0f, -1.0f);
 
 		glNormal3f(0.0f, 0.0f, 1.0f);
@@ -65,30 +77,20 @@ class CubeRenderer : public Renderable {
 		glVertex3f(-1.0f, -1.0f, 1.0f);
 		glVertex3f(1.0f, -1.0f, 1.0f);
 
-		glNormal3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, -1.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
-
-		glNormal3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, -1.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
-
-		glNormal3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-		glVertex3f(1.0f, 1.0f, -1.0f);
-		glVertex3f(-1.0f, 1.0f, -1.0f);
-
-		glNormal3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-		glVertex3f(-1.0f, 1.0f, -1.0f);
-		glVertex3f(-1.0f, 1.0f, 1.0f);
-
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glVertex3f(1.0f, 1.0f, 1.0f);
 		glVertex3f(-1.0f, 1.0f, 1.0f);
 		glVertex3f(1.0f, -1.0f, 1.0f);
+
+		glNormal3f(0.0f, 0.0f, -1.0f);
+		glVertex3f(-1.0f, -1.0f, -1.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
+
+		glNormal3f(0.0f, 0.0f, -1.0f);
+		glVertex3f(-1.0f, 1.0f, -1.0f);
+		glVertex3f(1.0f, 1.0f, -1.0f);
+		glVertex3f(1.0f, -1.0f, -1.0f);
 
 		glEnd();
 	}
