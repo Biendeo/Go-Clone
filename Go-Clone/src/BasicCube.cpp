@@ -15,6 +15,7 @@ class AutoRotate : public Updateable {
 	void Update() override {
 		auto transform = GetGameObject()->GetComponent<Transform>();
 		transform->Rotate().y += 0.0001f;
+		transform->Rotate().x += 0.00001f;
 	}
 };
 
@@ -27,9 +28,12 @@ class CubeRenderer : public Renderable {
 	void Render() override {
 		glColor3f(color.r, color.g, color.b);
 
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 		//TODO: Change this to pre-buffered objects.
 		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_LINE);
+		//glPolygonMode(GL_BACK, GL_NEVER);
 		glBegin(GL_TRIANGLES);
 
 		glNormal3f(0.0f, -1.0f, 0.0f);

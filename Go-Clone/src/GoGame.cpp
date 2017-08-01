@@ -16,7 +16,11 @@ GoGame::GoGame() {
 	videoMode.width = 800;
 	videoMode.height = 600;
 	systemVars.fullscreen = false;
-	window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default);
+	sf::ContextSettings settings;
+	settings.depthBits = 8;
+	//window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default);
+	window = new sf::Window(videoMode, systemVars.windowTitle, sf::Style::Default, settings);
+	sf::ContextSettings newsettings = window->getSettings();
 
 	// This is to prevent typing style input.
 	window->setKeyRepeatEnabled(false);
@@ -58,7 +62,16 @@ void GoGame::Start() {
 	transform->Rotate().z = 0.5f;
 	transform->Rotate().x = 0.5f;
 
-	std::cout << "You should see a spinning cube. (it might be straight on)\n";
+	
+	auto spinningCubeTwo = GameObject::Create<BasicCube>();
+	spinningCubeTwo->SetName("The Cube's Cousin!");
+	transform = spinningCubeTwo->GetComponent<Transform>();
+	transform->Scale() = glm::vec3{0.3f, 0.3f, 0.3f};
+	transform->Translate() = glm::vec3{0.5f, 0.2f, -1.6f};
+	transform->Rotate().z = 0.5f;
+	transform->Rotate().x = 0.5f;
+	
+	std::cout << "You should see two spinning cubes.\n";
 
 	// This is a standard while loop described on the documentation page.
 	while (window->isOpen()) {
@@ -135,27 +148,30 @@ void GoGame::RenderScene() {
 	//TODO: This is just for demoing. Fix this later on.
 	glClearColor(0.1f, 0.1f, 0.7f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+
+	//glFrustum(-0.1f, 0.1f, -0.1f, 0.1f, 1.0f, 500.0f);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glFrustum(-0.1f, 0.1f, -0.1f, 0.1f, 1.0f, 500.0f);
+	glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -5.0f, 5.0f);
 
+	glColorMask(true, true, true, true);
 	glDepthMask(true);
 	glClearDepth(500.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
 	glEnable(GL_LIGHTING);
 
 	glTranslatef(-5.0f, 5.0f, -3.0f);
 	glEnable(GL_LIGHT0);
-
+	
 	glTranslatef(5.0f, -5.0f, 3.0f);
 
-	//glTranslatef(0.0f, 0.0f, -3.0f);
+	//glTranslatef(0.0f, 0.0f, 3.0f);
 
 	std::shared_ptr<GameObject>(root)->RenderCall();
 	
