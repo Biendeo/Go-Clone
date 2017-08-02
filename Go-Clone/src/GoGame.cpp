@@ -67,7 +67,7 @@ void GoGame::Start() {
 	spinningCubeTwo->SetName("The Cube's Cousin!");
 	transform = spinningCubeTwo->GetComponent<Transform>();
 	transform->Scale() = glm::vec3{0.3f, 0.3f, 0.3f};
-	transform->Translate() = glm::vec3{0.5f, 0.2f, -1.6f};
+	transform->Translate() = glm::vec3{1.5f, 0.2f, -1.6f};
 	transform->Rotate().z = 0.5f;
 	transform->Rotate().x = 0.5f;
 	
@@ -153,7 +153,8 @@ void GoGame::RenderScene() {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -5.0f, 5.0f);
+	glFrustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.5f, 500.0f);
+	//glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -5.0f, 5.0f);
 
 	glColorMask(true, true, true, true);
 	glDepthMask(true);
@@ -171,7 +172,7 @@ void GoGame::RenderScene() {
 	
 	glTranslatef(5.0f, -5.0f, 3.0f);
 
-	//glTranslatef(0.0f, 0.0f, 3.0f);
+	glTranslatef(0.0f, 0.0f, -3.0f);
 
 	std::shared_ptr<GameObject>(root)->RenderCall();
 	
